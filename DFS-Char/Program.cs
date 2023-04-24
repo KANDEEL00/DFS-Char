@@ -29,8 +29,7 @@
         }
         public static Dictionary<char, char> DFS(char[] vertices, KeyValuePair<char, char>[] edges)
         {
-            //connect each vertex to his edges
-            //List<int>[] conn = new List<int>[vertices.Length];
+            //Adjacent vertices
             Dictionary<char, List<char>> Adj = new Dictionary<char, List<char>>();
             foreach (var i in edges)
             {
@@ -43,25 +42,19 @@
                     Adj.Add(i.Key, new List<char>());
                     Adj[i.Key].Add(i.Value);
                 }
-
                 //Undirected
                 //Adj[i.Value].Add(i.Key);
             }
-            //niggas
-            int time = 0;
-            //int[] d = new int[vertices.Length];//Discover
-            //int[] f = new int[vertices.Length];//Finish
-            //int[] p = new int[vertices.Length];//Parent
-
-            Dictionary<char, int> color = new Dictionary<char, int>(vertices.Length);//color white=0 , grey = 1 , black = 2
-
+            //needed Data Structures to track DFS
+            Dictionary<char, int> color = new Dictionary<char, int>(vertices.Length);//color white=NULL , grey = 1 , black = 2
+            Dictionary<char, char> p = new Dictionary<char, char>(vertices.Length);//Parent
             Dictionary<char, int> d = new Dictionary<char, int>(vertices.Length);//Discover
             Dictionary<char, int> f = new Dictionary<char, int>(vertices.Length);//Finish
-            Dictionary<char, char> p = new Dictionary<char, char>(vertices.Length);//Parent
-
+            int time = 0;
+            //iterate each vertex
             foreach (char u in vertices)
             {
-                if (!color.ContainsKey(u))
+                if (!color.ContainsKey(u))//NULL = white(new, first time to visit)
                 {
                     DFSVisit(u);
                 }
@@ -69,20 +62,20 @@
             }
             void DFSVisit(char u)
             {
-                color[u] = 1; //discoverd
-                time++;
-                d[u] = time;
+                color[u] = 1; //discovered(visited)
+                time++;//time increases each time we pass on edge
+                d[u] = time;//time of discovering this vertex (will help for knowing edge type)
                 foreach (char v in Adj[u])
                 {
-                    if (!color.ContainsKey(v)) //new
+                    if (!color.ContainsKey(v)) //new,same as above 
                     {
-                        p[v] = u;
-                        DFSVisit(v);
+                        p[v] = u; //but now the previous vertex is the parent of this vertex
+                        DFSVisit(v); //iterate to the next vertex untill there no new adjacent vertex
                     }
                 }
                 color[u] = 2; //explored(finished)
-                time++;
-                f[u] = time;
+                time++;//time increases also while backtracking
+                f[u] = time;//time of finish exploring this vertex (also will help for knowing edge type)
             }
 
             foreach (char u in vertices)
