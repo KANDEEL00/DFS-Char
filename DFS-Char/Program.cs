@@ -17,7 +17,7 @@
             };
             DFS(vertices, edges);
         }
-        public static Dictionary<char, char> DFS(char[] vertices, KeyValuePair<char, char>[] edges)
+        public static void DFS(char[] vertices, KeyValuePair<char, char>[] edges)
         {
             int tree = 0, backward = 0, forward = 0, cross = 0;
             //Adjacent vertices
