@@ -5,16 +5,6 @@
         static void Main(string[] args)
         {
             char[] vertices = new char[] { 'u', 'v', 'w', 'x', 'y', 'z' };
-            /*
-            u-v 0,1
-            u-x 0,3
-            v-y 1,4
-            w-y 2,4
-            w-z 2,5
-            x-v 3,1
-            y-x 4,3
-            z-z 5,5
-             */
             KeyValuePair<char, char>[] edges = new KeyValuePair<char, char>[] {
                     new KeyValuePair<char, char>('u','v'),
                     new KeyValuePair<char, char>('u','x'),
@@ -33,17 +23,13 @@
             Dictionary<char, List<char>> Adj = new Dictionary<char, List<char>>();
             foreach (var i in edges)
             {
-                if (Adj.ContainsKey(i.Key))
-                {
-                    Adj[i.Key].Add(i.Value);
-                }
-                else
-                {
+                if (!Adj.ContainsKey(i.Key))
                     Adj.Add(i.Key, new List<char>());
-                    Adj[i.Key].Add(i.Value);
-                }
+                Adj[i.Key].Add(i.Value);
                 //Undirected
-                //Adj[i.Value].Add(i.Key);
+                if (!Adj.ContainsKey(i.Value))
+                    Adj.Add(i.Value, new List<char>());
+                Adj[i.Value].Add(i.Key);
             }
             //needed Data Structures to track DFS
             Dictionary<char, int> color = new Dictionary<char, int>(vertices.Length);//color white=NULL , grey = 1 , black = 2
@@ -70,7 +56,7 @@
                     if (!color.ContainsKey(v)) //new,same as above 
                     {
                         p[v] = u; //but now the previous vertex is the parent of this vertex
-                        DFSVisit(v); //iterate to the next vertex untill there no new adjacent vertex
+                        DFSVisit(v); //iterate to the next vertex until there no new adjacent vertex
                     }
                 }
                 color[u] = 2; //explored(finished)
