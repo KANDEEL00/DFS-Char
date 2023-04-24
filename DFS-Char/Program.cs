@@ -19,6 +19,7 @@
         }
         public static Dictionary<char, char> DFS(char[] vertices, KeyValuePair<char, char>[] edges)
         {
+            int tree = 0, backward = 0, forward = 0, cross = 0;
             //Adjacent vertices
             Dictionary<char, List<char>> Adj = new Dictionary<char, List<char>>();
             foreach (var i in edges)
@@ -27,9 +28,9 @@
                     Adj.Add(i.Key, new List<char>());
                 Adj[i.Key].Add(i.Value);
                 //Undirected
-                if (!Adj.ContainsKey(i.Value))
-                    Adj.Add(i.Value, new List<char>());
-                Adj[i.Value].Add(i.Key);
+                //if (!Adj.ContainsKey(i.Value))
+                //    Adj.Add(i.Value, new List<char>());
+                //Adj[i.Value].Add(i.Key);
             }
             //needed Data Structures to track DFS
             Dictionary<char, int> color = new Dictionary<char, int>(vertices.Length);//color white=NULL , grey = 1 , black = 2
@@ -44,7 +45,6 @@
                 {
                     DFSVisit(u);
                 }
-
             }
             void DFSVisit(char u)
             {
@@ -55,8 +55,27 @@
                 {
                     if (!color.ContainsKey(v)) //new,same as above 
                     {
+                        tree++;
                         p[v] = u; //but now the previous vertex is the parent of this vertex
                         DFSVisit(v); //iterate to the next vertex until there no new adjacent vertex
+                    }
+                    else if (color[v] == 1)
+                    {
+                        //backward
+                        backward++;
+                    }
+                    else if (color[v] == 2)
+                    {
+                        if (d[u] < d[v])
+                        {
+                            //forward
+                            forward++;
+                        }
+                        else
+                        {
+                            //cross
+                            cross++;
+                        }
                     }
                 }
                 color[u] = 2; //explored(finished)
@@ -92,6 +111,10 @@
             foreach (char u in vertices)
                 Console.Write("------");
             Console.WriteLine();
+            Console.WriteLine("tree = " + tree);
+            Console.WriteLine("backward = " + backward);
+            Console.WriteLine("forward = " + forward);
+            Console.WriteLine("cross = " + cross);
 
             return p;
         }
